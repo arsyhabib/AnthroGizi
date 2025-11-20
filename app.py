@@ -621,7 +621,7 @@ def calculate_all():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/easy-mode', methods=['POST'])
-def easy_mode():
+def api_easy_mode():  # <--- NAMA BARU
     """Easy mode for quick reference"""
     try:
         data = request.get_json()
@@ -681,7 +681,7 @@ def easy_mode():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/growth-velocity', methods=['POST'])
-def growth_velocity():
+def api_growth_velocity():  # <--- NAMA BARU
     """Calculate growth velocity"""
     try:
         data = request.get_json()
