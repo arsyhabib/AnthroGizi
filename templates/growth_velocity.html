@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="display-6 fw-bold" style="color: {{ theme.text }}">
+                <i class="fas fa-chart-line me-2"></i>Analisis Kecepatan Pertumbuhan
+            </h2>
+            <p class="lead text-muted">Monitor laju pertumbuhan anak antar waktu pengukuran</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="card-title mb-0" style="color: {{ theme.primary }}">
+                        <i class="fas fa-calculator me-2"></i>Input Data Pengukuran
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form id="velocityForm">
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-3 border-bottom pb-2">Data Pengukuran Terkini (Sekarang)</h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Berat Badan (kg)</label>
+                                    <input type="number" step="0.01" class="form-control" id="current_weight" required placeholder="Contoh: 10.5">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tinggi Badan (cm)</label>
+                                    <input type="number" step="0.1" class="form-control" id="current_height" required placeholder="Contoh: 85.0">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tanggal Ukur</label>
+                                    <input type="date" class="form-control" id="current_date" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-3 border-bottom pb-2">Data Pengukuran Sebelumnya</h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Berat Badan (kg)</label>
+                                    <input type="number" step="0.01" class="form-control" id="prev_weight" required placeholder="Contoh: 9.8">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tinggi Badan (cm)</label>
+                                    <input type="number" step="0.1" class="form-control" id="prev_height" required placeholder="Contoh: 82.0">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tanggal Ukur</label>
+                                    <input type="date" class="form-control" id="prev_date" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-lg text-white" style="background: {{ theme.gradient }}; border: none;">
+                                <i class="fas fa-running me-2"></i>Hitung Kecepatan Pertumbuhan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="resultSection" class="d-none">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100 rounded-4">
+                            <div class="card-body p-4 text-center">
+                                <div class="icon-box mb-3 mx-auto rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 60px; height: 60px; background-color: {{ theme.bg }}; color: {{ theme.primary }}">
+                                    <i class="fas fa-weight fa-2x"></i>
+                                </div>
+                                <h5 class="card-title">Kenaikan Berat</h5>
+                                <h2 class="display-5 fw-bold my-3" id="weightResult">0</h2>
+                                <p class="text-muted" id="weightUnit">kg/bulan</p>
+                                <span class="badge rounded-pill fs-6" id="weightStatus">Normal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100 rounded-4">
+                            <div class="card-body p-4 text-center">
+                                <div class="icon-box mb-3 mx-auto rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 60px; height: 60px; background-color: {{ theme.bg }}; color: {{ theme.primary }}">
+                                    <i class="fas fa-ruler-vertical fa-2x"></i>
+                                </div>
+                                <h5 class="card-title">Pertumbuhan Tinggi</h5>
+                                <h2 class="display-5 fw-bold my-3" id="heightResult">0</h2>
+                                <p class="text-muted" id="heightUnit">cm/bulan</p>
+                                <span class="badge rounded-pill fs-6" id="heightStatus">Normal</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 rounded-4 mt-3 bg-light">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-3" style="color: {{ theme.text }}">
+                            <i class="fas fa-user-md me-2"></i>Rekomendasi & Interpretasi
+                        </h5>
+                        <p class="text-muted" id="interpretationText">Interpretasi hasil akan muncul di sini.</p>
+                        <ul class="list-unstyled mb-0" id="recommendationList">
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default dates
+    const today = new Date();
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    
+    document.getElementById('current_date').valueAsDate = today;
+    document.getElementById('prev_date').valueAsDate = lastMonth;
+
+    document.getElementById('velocityForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const currentWeight = parseFloat(document.getElementById('current_weight').value);
+        const prevWeight = parseFloat(document.getElementById('prev_weight').value);
+        const currentHeight = parseFloat(document.getElementById('current_height').value);
+        const prevHeight = parseFloat(document.getElementById('prev_height').value);
+        
+        const currentDate = new Date(document.getElementById('current_date').value);
+        const prevDate = new Date(document.getElementById('prev_date').value);
+        
+        // Calculate time difference in months
+        const diffTime = Math.abs(currentDate - prevDate);
+        const diffMonths = diffTime / (1000 * 60 * 60 * 24 * 30.44); // Average days in month
+        
+        if (diffMonths <= 0) {
+            alert('Tanggal pengukuran harus berbeda');
+            return;
+        }
+
+        fetch('/api/growth-velocity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                current_weight: currentWeight,
+                previous_weight: prevWeight,
+                current_height: currentHeight,
+                previous_height: prevHeight,
+                time_months: diffMonths
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            // Show results
+            document.getElementById('resultSection').classList.remove('d-none');
+            
+            // Update Weight Result
+            const wVel = data.weight_velocity;
+            document.getElementById('weightResult').textContent = wVel.value;
+            const wBadge = document.getElementById('weightStatus');
+            wBadge.textContent = wVel.status;
+            updateBadgeColor(wBadge, wVel.status);
+            
+            // Update Height Result
+            const hVel = data.height_velocity;
+            if (hVel) {
+                document.getElementById('heightResult').textContent = hVel.value;
+                const hBadge = document.getElementById('heightStatus');
+                hBadge.textContent = hVel.status;
+                updateBadgeColor(hBadge, hVel.status);
+            }
+            
+            // Update Recommendations
+            document.getElementById('interpretationText').textContent = data.interpretation;
+            const recList = document.getElementById('recommendationList');
+            recList.innerHTML = '';
+            data.recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.className = 'mb-2';
+                li.innerHTML = `<i class="fas fa-check-circle text-success me-2"></i>${rec}`;
+                recList.appendChild(li);
+            });
+
+            // Scroll to results
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghitung');
+        });
+    });
+
+    function updateBadgeColor(element, status) {
+        element.className = 'badge rounded-pill fs-6';
+        if (status === 'Normal') {
+            element.classList.add('bg-success');
+        } else if (status === 'Cepat' || status === 'Lambat') {
+            element.classList.add('bg-warning', 'text-dark');
+        } else {
+            element.classList.add('bg-secondary');
+        }
+    }
+});
+</script>
+{% endblock %}
