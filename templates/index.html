@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card text-center" style="background: var(--gradient-bg); color: white;">
+            <div class="card-body py-5">
+                <div class="mb-4">
+                    <i class="fas fa-baby" style="font-size: 5rem; margin-bottom: 20px;"></i>
+                    <h1 style="font-family: 'Crimson Text', serif; font-size: 3rem; margin-bottom: 15px;">
+                        {{ app_title }}
+                    </h1>
+                    <p class="lead mb-4" style="font-size: 1.2rem; opacity: 0.9;">
+                        Aplikasi Pemantauan Pertumbuhan Anak Profesional berbasis WHO Standards
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('calculator') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-calculator"></i> Mulai Kalkulasi
+                        </a>
+                        <a href="{{ url_for('easy_mode') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-magic"></i> Mode Mudah
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Key Features Preview -->
+                <div class="row mt-5">
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <i class="fas fa-chart-line" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <h6>WHO Standards</h6>
+                            <small>5 Indeks Z-Score</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <i class="fas fa-palette" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <h6>3 Tema Warna</h6>
+                            <small>Customizable Design</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <h6>Dual Mode</h6>
+                            <small>Orang Tua & Nakes</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            <i class="fas fa-crown" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <h6>Premium Features</h6>
+                            <small>Konsultasi Ahli Gizi</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Access Dashboard -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="section">
+            <h2><i class="fas fa-tachometer-alt"></i> Panel Cepat</h2>
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-calculator" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 15px;"></i>
+                            <h5>Kalkulator Lengkap</h5>
+                            <p class="small text-muted">Hitung Z-Score dengan metode input beragam</p>
+                            <a href="{{ url_for('calculator') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-arrow-right"></i> Mulai
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-magic" style="font-size: 3rem; color: var(--success-color); margin-bottom: 15px;"></i>
+                            <h5>Mode Mudah</h5>
+                            <p class="small text-muted">Cepat cari rentang normal berat dan tinggi</p>
+                            <a href="{{ url_for('easy_mode') }}" class="btn btn-success btn-sm">
+                                <i class="fas fa-arrow-right"></i> Coba
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-clipboard-check" style="font-size: 3rem; color: var(--warning-color); margin-bottom: 15px;"></i>
+                            <h5>Skrining KPSP</h5>
+                            <p class="small text-muted">Evaluasi perkembangan anak dengan KPSP</p>
+                            <a href="{{ url_for('kpsp') }}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-arrow-right"></i> Evaluasi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-tachometer-alt" style="font-size: 3rem; color: var(--info-color); margin-bottom: 15px;"></i>
+                            <h5>Kecepatan Tumbuh</h5>
+                            <p class="small text-muted">Analisis kecepatan pertumbuhan anak</p>
+                            <a href="{{ url_for('growth_velocity') }}" class="btn btn-info btn-sm">
+                                <i class="fas fa-arrow-right"></i> Analisis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Overview -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="section">
+            <h2><i class="fas fa-chart-bar"></i> Statistik Aplikasi</h2>
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-calculator" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 10px;"></i>
+                            <h3 class="text-primary" id="totalCalculations">{{ "{:,}".format(15890) }}</h3>
+                            <p class="text-muted">Total Perhitungan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-users" style="font-size: 2rem; color: var(--secondary-color); margin-bottom: 10px;"></i>
+                            <h3 class="text-secondary" id="activeUsers">{{ "{:,}".format(8934) }}</h3>
+                            <p class="text-muted">Pengguna Aktif</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-file-alt" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 10px;"></i>
+                            <h3 class="text-warning" id="reportsGenerated">{{ "{:,}".format(4567) }}</h3>
+                            <p class="text-muted">Laporan Dihasilkan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-video" style="font-size: 2rem; color: var(--success-color); margin-bottom: 10px;"></i>
+                            <h3 class="text-success" id="videosWatched">{{ "{:,}".format(23456) }}</h3>
+                            <p class="text-muted">Video Ditonton</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Highlights -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="section">
+            <h2><i class="fas fa-star"></i> Fitur Unggulan</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-chart-line"></i> Kalkulator Gizi WHO</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> 5 Indeks Z-Score WHO</li>
+                                <li><i class="fas fa-check text-success"></i> Input Usia Multi-Metode</li>
+                                <li><i class="fas fa-check text-success"></i> Lingkar Kepala (HCZ)</li>
+                                <li><i class="fas fa-check text-success"></i> Interpretasi Permenkes RI</li>
+                                <li><i class="fas fa-check text-success"></i> Grafik Interaktif WHO</li>
+                                <li><i class="fas fa-check text-success"></i> Export PDF/Excel/CSV</li>
+                            </ul>
+                            <a href="{{ url_for('calculator') }}" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Gunakan Kalkulator
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-clipboard-check"></i> Skrining KPSP</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> 8 Kelompok Usia (3-24 bulan)</li>
+                                <li><i class="fas fa-check text-success"></i> Panduan Video Terverifikasi</li>
+                                <li><i class="fas fa-check text-success"></i> Hasil Interpretasi Otomatis</li>
+                                <li><i class="fas fa-check text-success"></i> Rekomendasi Lanjutan</li>
+                                <li><i class="fas fa-check text-success"></i> Riwayat Skrining</li>
+                                <li><i class="fas fa-check text-success"></i> Export Hasil</li>
+                            </ul>
+                            <a href="{{ url_for('kpsp') }}" class="btn btn-success">
+                                <i class="fas fa-clipboard-check"></i> Mulai Skrining
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-warning text-white">
+                            <h5 class="mb-0"><i class="fas fa-palette"></i> Kustomisasi Lengkap</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> 3 Tema Warna Pastel</li>
+                                <li><i class="fas fa-check text-success"></i> Mode Orang Tua & Nakes</li>
+                                <li><i class="fas fa-check text-success"></i> Custom Notifications</li>
+                                <li><i class="fas fa-check text-success"></i> Motivational Messages</li>
+                                <li><i class="fas fa-check text-success"></i> Data Synchronization</li>
+                                <li><i class="fas fa-check text-success"></i> Premium Features</li>
+                            </ul>
+                            <button class="btn btn-warning" onclick="showCustomizationModal()">
+                                <i class="fas fa-palette"></i> Kustomisasi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fas fa-book"></i> Perpustakaan & Video</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> 50+ Artikel Terverifikasi</li>
+                                <li><i class="fas fa-check text-success"></i> Kategori Lengkap</li>
+                                <li><i class="fas fa-check text-success"></i> Mode English</li>
+                                <li><i class="fas fa-check text-success"></i> Video Edukasi Premium</li>
+                                <li><i class="fas fa-check text-success"></i> Channel 10k+ Subscriber</li>
+                                <li><i class="fas fa-check text-success"></i> Update Rutin</li>
+                            </ul>
+                            <a href="{{ url_for('library') }}" class="btn btn-info">
+                                <i class="fas fa-book-open"></i> Buka Perpustakaan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Premium Features Showcase -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="section">
+            <h2><i class="fas fa-crown"></i> Fitur Premium</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card border-warning h-100">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-medal"></i> 
+                                Silver Package - Rp 49.999
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Bebas Iklan</li>
+                                <li><i class="fas fa-check text-success"></i> Semua Fitur Dasar</li>
+                                <li><i class="fas fa-check text-success"></i> Export Unlimited</li>
+                                <li><i class="fas fa-check text-success"></i> Custom Themes</li>
+                                <li><i class="fas fa-check text-success"></i> Priority Support</li>
+                            </ul>
+                            <button class="btn btn-warning" onclick="selectPackage('silver')">
+                                <i class="fas fa-shopping-cart"></i> Pilih Paket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card border-warning h-100" style="border-width: 3px;">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-crown"></i> 
+                                Gold Package - Rp 99.999 ⭐ POPULER
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Semua Fitur Silver</li>
+                                <li><i class="fas fa-check text-success"></i> Notifikasi Custom</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>3x Konsultasi WhatsApp</strong></li>
+                                <li><i class="fas fa-check text-success"></i> Advanced Analytics</li>
+                                <li><i class="fas fa-check text-success"></i> Direct Hotline Support</li>
+                            </ul>
+                            <button class="btn btn-warning" onclick="selectPackage('gold')">
+                                <i class="fas fa-shopping-cart"></i> Pilih Paket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('premium') }}" class="btn btn-outline-warning btn-lg">
+                    <i class="fas fa-info-circle"></i> Lihat Detail Premium
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Aktivitas Terbaru</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Perhitungan Terakhir</h6>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Aisyah Putri (18 bulan)</h6>
+                                    <small class="text-muted">2 jam lalu</small>
+                                </div>
+                                <p class="mb-1">WAZ: -0.5 (Normal) | HAZ: -0.3 (Normal)</p>
+                                <small class="text-muted">Status gizi baik</small>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Bintang Pratama (24 bulan)</h6>
+                                    <small class="text-muted">5 jam lalu</small>
+                                </div>
+                                <p class="mb-1">WAZ: 1.2 (Berisiko Lebih) | BAZ: 1.5 (Gizi Lebih)</p>
+                                <small class="text-muted">Perlu perhatian khusus</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6>Artikel Populer</h6>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Panduan MP-ASI 6 Bulan</h6>
+                                    <small class="text-muted">1.2k dibaca</small>
+                                </div>
+                                <p class="mb-1">Lengkap dengan resep dan tips</p>
+                                <small class="text-muted">Dr. dr. Damar Prasmusinto, Sp.A(K)</small>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Manajemen Stunting</h6>
+                                    <small class="text-muted">890 dibaca</small>
+                                </div>
+                                <p class="mb-1">Strategi pencegahan dan penanganan</p>
+                                <small class="text-muted">Dr. Rini Hapsari, Sp.GK</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animate counters
+    function animateCounter(element, target) {
+        let current = 0;
+        const increment = target / 100;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.floor(current).toLocaleString();
+        }, 20);
+    }
+
+    // Initialize counter animations when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = [
+            { element: 'totalCalculations', target: 15890 },
+            { element: 'activeUsers', target: 8934 },
+            { element: 'reportsGenerated', target: 4567 },
+            { element: 'videosWatched', target: 23456 }
+        ];
+
+        counters.forEach((counter, index) => {
+            setTimeout(() => {
+                animateCounter(document.getElementById(counter.element), counter.target);
+            }, index * 200);
+        });
+    });
+
+    // Show customization modal
+    function showCustomizationModal() {
+        showNotification('Fitur kustomisasi tersedia di menu tema dan mode!', 'info');
+    }
+
+    // Select package
+    function selectPackage(packageType) {
+        const packages = {
+            'silver': {
+                name: 'Silver Package',
+                price: 49999,
+                features: ['Bebas Iklan', 'Semua Fitur Dasar', 'Export Unlimited', 'Custom Themes', 'Priority Support']
+            },
+            'gold': {
+                name: 'Gold Package', 
+                price: 99999,
+                features: ['Semua Fitur Silver', 'Notifikasi Custom', '3x Konsultasi WhatsApp', 'Advanced Analytics', 'Direct Hotline']
+            }
+        };
+        
+        const pkg = packages[packageType];
+        showNotification(`Memilih ${pkg.name} - Rp ${pkg.price.toLocaleString()}`, 'info');
+        
+        // Redirect to premium page for detailed checkout
+        setTimeout(() => {
+            window.location.href = '{{ url_for("premium") }}';
+        }, 1000);
+    }
+
+    // Auto-update motivational message every 20 seconds
+    setInterval(() => {
+        updateMotivationalMessage();
+    }, 20000);
+</script>
+{% endblock %}

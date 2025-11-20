@@ -1,0 +1,679 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Welcome Message -->
+<div class="welcome-message fade-in-up">
+    <h3><i class="fas fa-magic"></i> Mode Mudah - Referensi Cepat</h3>
+    <p>Cari tahu rentang normal berat dan tinggi badan anak Anda dengan cepat dan mudah. Hanya perlu usia anak!</p>
+    <div class="alert alert-info mt-3">
+        <i class="fas fa-lightbulb"></i>
+        <strong>Tips:</strong> Mode ini memberikan referensi cepat berdasarkan standar WHO untuk anak usia 6-60 bulan.
+    </div>
+</div>
+
+<!-- Easy Mode Input -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="easy-mode-card">
+            <h4 class="text-center mb-4">
+                <i class="fas fa-calculator"></i> 
+                Cari Rentang Normal Anak Anda
+            </h4>
+            
+            <form id="easyModeForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="easyAgeMonths" class="form-label">Usia Anak (bulan) *</label>
+                        <input type="number" class="form-control form-control-lg" id="easyAgeMonths" 
+                               placeholder="Contoh: 18" min="6" max="60" required>
+                        <small class="text-muted">Masukkan usia anak dalam bulan (6-60 bulan)</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="easyGender" class="form-label">Jenis Kelamin *</label>
+                        <select class="form-select form-select-lg" id="easyGender" required>
+                            <option value="">Pilih Jenis Kelamin</option>
+                            <option value="M">Laki-laki</option>
+                            <option value="F">Perempuan</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="calculateEasyMode()">
+                        <i class="fas fa-search"></i> Cari Rentang Normal
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-lg ms-2" onclick="loadEasySample()">
+                        <i class="fas fa-database"></i> Contoh
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Quick Reference -->
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Panduan Cepat</h5>
+            </div>
+            <div class="card-body">
+                <h6>Rentang Normal WHO:</h6>
+                <ul class="list-unstyled">
+                    <li><span class="badge bg-success">Normal</span> Z-Score: -2 sd +2</li>
+                    <li><span class="badge bg-warning">Waspada</span> Z-Score: &lt; -2 atau &gt; +2</li>
+                </ul>
+                
+                <hr>
+                
+                <h6>Usia yang Tersedia:</h6>
+                <p class="small text-muted">
+                    <i class="fas fa-calendar"></i> 6 - 60 bulan<br>
+                    <i class="fas fa-baby"></i> Bayi dan balita
+                </p>
+                
+                <hr>
+                
+                <h6>Fitur Lainnya:</h6>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('calculator') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-calculator"></i> Kalkulator Lengkap
+                    </a>
+                    <a href="{{ url_for('growth_velocity') }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-tachometer-alt"></i> Kecepatan Tumbuh
+                    </a>
+                    <a href="{{ url_for('kpsp') }}" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-clipboard-check"></i> Skrining KPSP
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Results Section -->
+<div class="row mb-4" id="easyResults" style="display: none;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar"></i> 
+                    Rentang Normal untuk Anak Usia <span id="resultAge"></span> Bulan
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-weight" style="font-size: 2rem; color: var(--primary-color);"></i>
+                                <h4 class="mt-2">Berat Badan</h4>
+                                <div id="weightRange">
+                                    <h5 class="text-success">-</h5>
+                                    <p class="text-muted">kg</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-ruler-vertical" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                                <h4 class="mt-2">Tinggi Badan</h4>
+                                <div id="heightRange">
+                                    <h5 class="text-success">-</h5>
+                                    <p class="text-muted">cm</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Ranges -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-weight"></i> Rentang Berat Badan</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="weightDetails">
+                                    <p>Data akan muncul setelah perhitungan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-ruler-vertical"></i> Rentang Tinggi Badan</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="heightDetails">
+                                    <p>Data akan muncul setelah perhitungan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Visualisasi Rentang Normal</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="easyChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interpretation Section -->
+<div class="row mb-4" id="interpretationSection" style="display: none;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Interpretasi dan Tips</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-chart-line"></i> Interpretasi Diagram</h6>
+                        <div id="chartInterpretation">
+                            <p>Interpretasi akan muncul setelah perhitungan.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-user-md"></i> Tips untuk Orang Tua</h6>
+                        <div id="parentTips">
+                            <p>Tips akan muncul setelah perhitungan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Age-Specific Information -->
+<div class="row mb-4" id="ageInfoSection" style="display: none;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-baby"></i> Informasi untuk Usia <span id="infoAge"></span> Bulan</h5>
+            </div>
+            <div class="card-body">
+                <div id="ageSpecificInfo">
+                    <p>Informasi spesifik usia akan muncul di sini.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-tasks"></i> Tindakan Lanjutan</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Simpan & Bagikan</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" onclick="saveEasyResult()">
+                                <i class="fas fa-save"></i> Simpan Hasil
+                            </button>
+                            <button class="btn btn-info" onclick="shareEasyResult()">
+                                <i class="fas fa-share"></i> Bagikan
+                            </button>
+                            <button class="btn btn-secondary" onclick="printEasyResult()">
+                                <i class="fas fa-print"></i> Cetak
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Analisis Lanjutan</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="{{ url_for('calculator') }}" class="btn btn-success">
+                                <i class="fas fa-calculator"></i> Kalkulator Lengkap
+                            </a>
+                            <a href="{{ url_for('growth_velocity') }}" class="btn btn-warning">
+                                <i class="fas fa-tachometer-alt"></i> Kecepatan Tumbuh
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let easyChart;
+    let currentResult = {};
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeChart();
+    });
+
+    // Calculate easy mode
+    function calculateEasyMode() {
+        const ageMonths = parseInt(document.getElementById('easyAgeMonths').value);
+        const gender = document.getElementById('easyGender').value;
+        
+        if (!ageMonths || !gender) {
+            showNotification('Usia dan jenis kelamin harus diisi', 'error');
+            return;
+        }
+        
+        if (ageMonths < 6 || ageMonths > 60) {
+            showNotification('Usia harus antara 6-60 bulan', 'error');
+            return;
+        }
+        
+        showLoading();
+        
+        // Simulate API call
+        setTimeout(() => {
+            const result = calculateEasyRanges(ageMonths, gender);
+            displayEasyResults(result);
+            hideLoading();
+        }, 1000);
+    }
+
+    // Calculate easy ranges (simplified WHO reference)
+    function calculateEasyRanges(ageMonths, gender) {
+        // WHO reference data (simplified)
+        const referenceData = {
+            'M': {
+                weight: {
+                    6: { min: 6.5, max: 9.5, median: 8.0 },
+                    9: { min: 7.5, max: 11.0, median: 9.2 },
+                    12: { min: 8.5, max: 12.5, median: 10.5 },
+                    18: { min: 9.5, max: 14.5, median: 12.0 },
+                    24: { min: 11.0, max: 16.5, median: 13.7 },
+                    36: { min: 12.5, max: 19.0, median: 15.7 },
+                    48: { min: 14.0, max: 21.5, median: 17.7 },
+                    60: { min: 15.5, max: 24.0, median: 19.7 }
+                },
+                height: {
+                    6: { min: 63, max: 73, median: 68 },
+                    9: { min: 67, max: 77, median: 72 },
+                    12: { min: 71, max: 82, median: 76.5 },
+                    18: { min: 76, max: 87, median: 81.5 },
+                    24: { min: 82, max: 94, median: 88 },
+                    36: { min: 87, max: 102, median: 94.5 },
+                    48: { min: 92, max: 110, median: 101 },
+                    60: { min: 97, max: 118, median: 107.5 }
+                }
+            },
+            'F': {
+                weight: {
+                    6: { min: 5.8, max: 8.8, median: 7.3 },
+                    9: { min: 6.8, max: 10.3, median: 8.5 },
+                    12: { min: 7.8, max: 11.8, median: 9.8 },
+                    18: { min: 8.8, max: 13.8, median: 11.3 },
+                    24: { min: 10.2, max: 15.8, median: 13.0 },
+                    36: { min: 11.8, max: 18.2, median: 15.0 },
+                    48: { min: 13.2, max: 20.8, median: 17.0 },
+                    60: { min: 14.8, max: 23.2, median: 19.0 }
+                },
+                height: {
+                    6: { min: 61, max: 71, median: 66 },
+                    9: { min: 65, max: 75, median: 70 },
+                    12: { min: 69, max: 80, median: 74.5 },
+                    18: { min: 74, max: 85, median: 79.5 },
+                    24: { min: 80, max: 92, median: 86 },
+                    36: { min: 85, max: 100, median: 92.5 },
+                    48: { min: 90, max: 108, median: 99 },
+                    60: { min: 95, max: 116, median: 105.5 }
+                }
+            }
+        };
+        
+        // Find closest age
+        const availableAges = Object.keys(referenceData[gender].weight).map(Number);
+        const closestAge = availableAges.reduce((prev, curr) => {
+            return Math.abs(curr - ageMonths) < Math.abs(prev - ageMonths) ? curr : prev;
+        });
+        
+        return {
+            age: ageMonths,
+            gender: gender,
+            closestAge: closestAge,
+            weight: referenceData[gender].weight[closestAge],
+            height: referenceData[gender].height[closestAge]
+        };
+    }
+
+    // Display easy results
+    function displayEasyResults(result) {
+        document.getElementById('easyResults').style.display = 'block';
+        document.getElementById('interpretationSection').style.display = 'block';
+        document.getElementById('ageInfoSection').style.display = 'block';
+        
+        // Update result age
+        document.getElementById('resultAge').textContent = result.age;
+        document.getElementById('infoAge').textContent = result.age;
+        
+        // Update weight range
+        const weightRange = document.getElementById('weightRange');
+        weightRange.innerHTML = `
+            <h5 class="text-success">${result.weight.min} - ${result.weight.max}</h5>
+            <p class="text-muted">kg</p>
+            <small class="text-info">Median: ${result.weight.median} kg</small>
+        `;
+        
+        // Update height range
+        const heightRange = document.getElementById('heightRange');
+        heightRange.innerHTML = `
+            <h5 class="text-success">${result.height.min} - ${result.height.max}</h5>
+            <p class="text-muted">cm</p>
+            <small class="text-info">Median: ${result.height.median} cm</small>
+        `;
+        
+        // Update detailed ranges
+        updateDetailedRanges(result);
+        
+        // Update chart
+        updateEasyChart(result);
+        
+        // Update interpretations
+        updateInterpretations(result);
+        
+        // Update age-specific info
+        updateAgeSpecificInfo(result);
+        
+        // Store current result
+        currentResult = result;
+        
+        // Scroll to results
+        document.getElementById('easyResults').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Update detailed ranges
+    function updateDetailedRanges(result) {
+        const weightDetails = document.getElementById('weightDetails');
+        weightDetails.innerHTML = `
+            <div class="mb-3">
+                <h6>Rentang Berat Badan Normal:</h6>
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-danger" style="width: 25%">Underweight</div>
+                    <div class="progress-bar bg-success" style="width: 50%">Normal</div>
+                    <div class="progress-bar bg-warning" style="width: 25%">Overweight</div>
+                </div>
+                <ul class="list-unstyled">
+                    <li><strong>Batas Bawah:</strong> ${result.weight.min} kg</li>
+                    <li><strong>Median:</strong> ${result.weight.median} kg</li>
+                    <li><strong>Batas Atas:</strong> ${result.weight.max} kg</li>
+                </ul>
+            </div>
+        `;
+        
+        const heightDetails = document.getElementById('heightDetails');
+        heightDetails.innerHTML = `
+            <div class="mb-3">
+                <h6>Rentang Tinggi Badan Normal:</h6>
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-danger" style="width: 25%">Stunted</div>
+                    <div class="progress-bar bg-success" style="width: 50%">Normal</div>
+                    <div class="progress-bar bg-warning" style="width: 25%">Tall</div>
+                </div>
+                <ul class="list-unstyled">
+                    <li><strong>Batas Bawah:</strong> ${result.height.min} cm</li>
+                    <li><strong>Median:</strong> ${result.height.median} cm</li>
+                    <li><strong>Batas Atas:</strong> ${result.height.max} cm</li>
+                </ul>
+            </div>
+        `;
+    }
+
+    // Initialize chart
+    function initializeChart() {
+        const ctx = document.getElementById('easyChart').getContext('2d');
+        
+        easyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Berat Badan', 'Tinggi Badan'],
+                datasets: [{
+                    label: 'Batas Bawah',
+                    data: [0, 0],
+                    backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                    borderColor: 'rgb(220, 53, 69)',
+                    borderWidth: 1
+                }, {
+                    label: 'Median',
+                    data: [0, 0],
+                    backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                    borderColor: 'rgb(40, 167, 69)',
+                    borderWidth: 1
+                }, {
+                    label: 'Batas Atas',
+                    data: [0, 0],
+                    backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                    borderColor: 'rgb(255, 193, 7)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Rentang Normal Pertumbuhan'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Nilai'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Update chart
+    function updateEasyChart(result) {
+        easyChart.data.datasets[0].data = [result.weight.min, result.height.min];
+        easyChart.data.datasets[1].data = [result.weight.median, result.height.median];
+        easyChart.data.datasets[2].data = [result.weight.max, result.height.max];
+        
+        easyChart.update();
+    }
+
+    // Update interpretations
+    function updateInterpretations(result) {
+        const chartInterp = document.getElementById('chartInterpretation');
+        const parentTips = document.getElementById('parentTips');
+        
+        // Chart interpretation
+        chartInterp.innerHTML = `
+            <div class="alert alert-info">
+                <h6>Interpretasi Diagram:</h6>
+                <ul>
+                    <li><strong>Zona Hijau:</strong> Rentang normal WHO</li>
+                    <li><strong>Garis Merah:</strong> Batas bawah normal</li>
+                    <li><strong>Garis Kuning:</strong> Batas atas normal</li>
+                    <li><strong>Garis Hijau:</strong> Nilai median WHO</li>
+                </ul>
+                <p>Anak Anda dikatakan memiliki pertumbuhan normal jika berada dalam rentang hijau.</p>
+            </div>
+        `;
+        
+        // Parent tips
+        const tips = getEasyModeTips(result);
+        parentTips.innerHTML = `
+            <div class="alert alert-success">
+                <h6>Tips untuk Orang Tua:</h6>
+                <ul>
+                    ${tips.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
+    // Get easy mode tips
+    function getEasyModeTips(result) {
+        const tips = [
+            "📏 Lakukan pengukuran rutin setiap bulan",
+            "🥗 Pastikan asupan nutrisi seimbang",
+            "😴 Jaga pola tidur yang cukup (12-14 jam/hari)",
+            "🏃‍♂️ Dorong aktivitas fisik sesuai usia",
+            "🏥 Konsultasikan dengan dokter jika ada kekhawatiran"
+        ];
+        
+        if (result.age >= 6) {
+            tips.push("🥄 Perkenalkan MP-ASI yang bergizi seimbang");
+        }
+        
+        if (result.age >= 12) {
+            tips.push("🍼 Kurangi pemberian ASI bertahap dan tingkatkan makanan padat");
+        }
+        
+        if (result.age >= 24) {
+            tips.push("🍽️ Latih anak makan sendiri untuk kemandirian");
+        }
+        
+        return tips;
+    }
+
+    // Update age-specific info
+    function updateAgeSpecificInfo(result) {
+        const ageInfo = document.getElementById('ageSpecificInfo');
+        
+        let info = `<h6>Milestone Perkembangan untuk Usia ${result.age} Bulan:</h6>`;
+        
+        if (result.age >= 6 && result.age < 9) {
+            info += `
+                <ul>
+                    <li><strong>Fisik:</strong> Bisa duduk dengan bantuan</li>
+                    <li><strong>Motorik:</strong> Meraih benda dengan kedua tangan</li>
+                    <li><strong>Sosial:</strong> Tersenyum pada orang familiar</li>
+                    <li><strong>Bahasa:</strong> Mengeluarkan suara "mengoceh"</li>
+                </ul>
+            `;
+        } else if (result.age >= 9 && result.age < 12) {
+            info += `
+                <ul>
+                    <li><strong>Fisik:</strong> Duduk sendiri stabil</li>
+                    <li><strong>Motorik:</strong> Merangkak maju</li>
+                    <li><strong>Sosial:</strong> Menunjukkan ketakutan pada orang asing</li>
+                    <li><strong>Bahasa:</strong> Mengucapkan "mama" atau "papa"</li>
+                </ul>
+            `;
+        } else if (result.age >= 12 && result.age < 18) {
+            info += `
+                <ul>
+                    <li><strong>Fisik:</strong> Berdiri dengan bantuan</li>
+                    <li><strong>Motorik:</strong> Berjalan berpegangan</li>
+                    <li><strong>Sosial:</strong> Meniru gerakan orang lain</li>
+                    <li><strong>Bahasa:</strong> Mengucapkan 2-3 kata bermakna</li>
+                </ul>
+            `;
+        } else if (result.age >= 18 && result.age < 24) {
+            info += `
+                <ul>
+                    <li><strong>Fisik:</strong> Berjalan sendiri</li>
+                    <li><strong>Motorik:</strong> Berlari pendek</li>
+                    <li><strong>Sosial:</strong> Bermain bersama anak lain</li>
+                    <li><strong>Bahasa:</strong> Mengucapkan kalimat 2 kata</li>
+                </ul>
+            `;
+        } else {
+            info += `
+                <ul>
+                    <li><strong>Fisik:</strong> Aktivitas motorik kasar meningkat</li>
+                    <li><strong>Motorik:</strong> Koordinasi tangan-mata baik</li>
+                    <li><strong>Sosial:</strong> Menunjukkan empati</li>
+                    <li><strong>Bahasa:</strong> Kosakata berkembang pesat</li>
+                </ul>
+            `;
+        }
+        
+        info += `
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Penting:</strong> Setiap anak berkembang dengan kecepatannya sendiri. 
+                Jika ada kekhawatiran, konsultasikan dengan dokter anak.
+            </div>
+        `;
+        
+        ageInfo.innerHTML = info;
+    }
+
+    // Load sample data
+    function loadEasySample() {
+        document.getElementById('easyAgeMonths').value = '18';
+        document.getElementById('easyGender').value = 'M';
+        showNotification('Data contoh dimuat!', 'success');
+    }
+
+    // Save easy result
+    function saveEasyResult() {
+        if (!currentResult.age) {
+            showNotification('Lakukan perhitungan terlebih dahulu', 'warning');
+            return;
+        }
+        
+        showLoading();
+        
+        setTimeout(() => {
+            hideLoading();
+            showNotification('Hasil mode mudah berhasil disimpan!', 'success');
+        }, 1000);
+    }
+
+    // Share easy result
+    function shareEasyResult() {
+        if (!currentResult.age) {
+            showNotification('Lakukan perhitungan terlebih dahulu', 'warning');
+            return;
+        }
+        
+        if (navigator.share) {
+            navigator.share({
+                title: `Rentang Normal Anak ${currentResult.age} Bulan - anthroGizi`,
+                text: `Berat: ${currentResult.weight.min}-${currentResult.weight.max} kg, Tinggi: ${currentResult.height.min}-${currentResult.height.max} cm`,
+                url: window.location.href
+            });
+        } else {
+            showNotification('Fitur berbagi tidak tersedia', 'warning');
+        }
+    }
+
+    // Print easy result
+    function printEasyResult() {
+        if (!currentResult.age) {
+            showNotification('Lakukan perhitungan terlebih dahulu', 'warning');
+            return;
+        }
+        
+        window.print();
+    }
+</script>
+{% endblock %}

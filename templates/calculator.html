@@ -1,0 +1,922 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Welcome Message -->
+<div class="welcome-message fade-in-up">
+    <h3><i class="fas fa-calculator"></i> Kalkulator Gizi WHO</h3>
+    <p>Herramienta profesional para el monitoreo del crecimiento y desarrollo de niños de 0 a 60 meses según los estándares de la OMS y el Permenkes RI.</p>
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <i class="fas fa-chart-line"></i>
+            <strong>5 Indeks WHO</strong><br>
+            <small>WAZ, HAZ, WHZ, BAZ, HCZ</small>
+        </div>
+        <div class="col-md-4">
+            <i class="fas fa-balance-scale"></i>
+            <strong>2 Standar</strong><br>
+            <small>WHO 2006 & Permenkes RI</small>
+        </div>
+        <div class="col-md-4">
+            <i class="fas fa-lightbulb"></i>
+            <strong>Tips Profesional</strong><br>
+            <small>Panduan ahli gizi</small>
+        </div>
+    </div>
+</div>
+
+<!-- Input Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-plus"></i> 
+                    Input Data Anak - 
+                    <span class="badge bg-primary">Mode: {{ mode|title }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="calculatorForm">
+                    <!-- Child Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="childName" class="form-label">Nama Anak *</label>
+                            <input type="text" class="form-control" id="childName" placeholder="Masukkan nama anak" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="motherName" class="form-label">Nama Ibu *</label>
+                            <input type="text" class="form-control" id="motherName" placeholder="Masukkan nama ibu" required>
+                        </div>
+                    </div>
+
+                    <!-- Age Input Methods -->
+                    <div class="mb-4">
+                        <label class="form-label">Metode Input Usia *</label>
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ageMethod" id="ageMonths" value="months" checked>
+                                    <label class="form-check-label" for="ageMonths">
+                                        <i class="fas fa-calendar-alt"></i> Bulan
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ageMethod" id="ageDays" value="days">
+                                    <label class="form-check-label" for="ageDays">
+                                        <i class="fas fa-sun"></i> Hari
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ageMethod" id="ageDate" value="date">
+                                    <label class="form-check-label" for="ageDate">
+                                        <i class="fas fa-calendar"></i> Tanggal Lahir
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ageMethod" id="ageBoth" value="both">
+                                    <label class="form-check-label" for="ageBoth">
+                                        <i class="fas fa-clock"></i> Birth + Measurement
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Age Input Fields -->
+                        <div id="ageInputFields">
+                            <!-- Months Input (Default) -->
+                            <div id="monthsInput" class="age-input">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="ageMonthsValue" class="form-label">Usia (bulan)</label>
+                                        <input type="number" class="form-control" id="ageMonthsValue" step="0.1" placeholder="Contoh: 18.5">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="gender" class="form-label">Jenis Kelamin *</label>
+                                        <select class="form-select" id="gender" required>
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="M">Laki-laki</option>
+                                            <option value="F">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Days Input -->
+                            <div id="daysInput" class="age-input" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="ageDaysValue" class="form-label">Usia (hari)</label>
+                                        <input type="number" class="form-control" id="ageDaysValue" placeholder="Contoh: 547">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="genderDays" class="form-label">Jenis Kelamin *</label>
+                                        <select class="form-select" id="genderDays" required>
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="M">Laki-laki</option>
+                                            <option value="F">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Date Input -->
+                            <div id="dateInput" class="age-input" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="birthDate" class="form-label">Tanggal Lahir *</label>
+                                        <input type="date" class="form-control" id="birthDate">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="genderDate" class="form-label">Jenis Kelamin *</label>
+                                        <select class="form-select" id="genderDate" required>
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="M">Laki-laki</option>
+                                            <option value="F">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Both Dates Input -->
+                            <div id="bothInput" class="age-input" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="birthDateBoth" class="form-label">Tanggal Lahir *</label>
+                                        <input type="date" class="form-control" id="birthDateBoth">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="measurementDate" class="form-label">Tanggal Pengukuran *</label>
+                                        <input type="date" class="form-control" id="measurementDate" value="{{ today }}">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <label for="genderBoth" class="form-label">Jenis Kelamin *</label>
+                                        <select class="form-select" id="genderBoth" required>
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="M">Laki-laki</option>
+                                            <option value="F">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Measurement Inputs -->
+                    <div class="mb-4">
+                        <label class="form-label">Data Pengukuran *</label>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="weight" class="form-label">Berat Badan (kg)</label>
+                                <input type="number" class="form-control" id="weight" step="0.01" placeholder="Contoh: 10.50" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="height" class="form-label">Tinggi Badan (cm)</label>
+                                <input type="number" class="form-control" id="height" step="0.1" placeholder="Contoh: 78.0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="headCircumference" class="form-label">Lingkar Kepala (cm)</label>
+                                <input type="number" class="form-control" id="headCircumference" step="0.1" placeholder="Contoh: 45.5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Measurement Type -->
+                    <div class="mb-4">
+                        <label class="form-label">Tipe Pengukuran</label>
+                        <select class="form-select" id="measurementType">
+                            <option value="all">Semua Jenis (Rekomendasi)</option>
+                            <option value="wfa">Berat untuk Usia (WAZ)</option>
+                            <option value="hfa">Tinggi untuk Usia (HAZ)</option>
+                            <option value="wfh">Berat untuk Tinggi (WHZ)</option>
+                            <option value="bfa">IMT untuk Usia (BAZ)</option>
+                            <option value="hcfa">Lingkar Kepala untuk Usia (HCZ)</option>
+                        </select>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" class="btn btn-primary" onclick="calculateAll()">
+                            <i class="fas fa-calculator"></i> Hitung Semua
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="generateCharts()">
+                            <i class="fas fa-chart-line"></i> Generate Grafik
+                        </button>
+                        <button type="button" class="btn btn-info" onclick="saveCalculation()">
+                            <i class="fas fa-save"></i> Simpan Data
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="loadSampleData()">
+                            <i class="fas fa-database"></i> Contoh Data
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">
+                            <i class="fas fa-eraser"></i> Bersihkan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Reference & Tools -->
+    <div class="col-lg-4">
+        <!-- WHO Reference -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Referensi Cepat</h5>
+            </div>
+            <div class="card-body">
+                <h6>Interpretasi Z-Score WHO:</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Z-Score</th>
+                                <th>Status WHO</th>
+                                <th>Status Permenkes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>&lt; -3</td>
+                                <td><span class="status-badge status-danger">Gizi Buruk</span></td>
+                                <td><span class="status-badge status-danger">Sangat Kurus</span></td>
+                            </tr>
+                            <tr>
+                                <td>-3 sd -2</td>
+                                <td><span class="status-badge status-warning">Gizi Kurang</span></td>
+                                <td><span class="status-badge status-warning">Kurus</span></td>
+                            </tr>
+                            <tr>
+                                <td>-2 sd +1</td>
+                                <td><span class="status-badge status-normal">Gizi Baik</span></td>
+                                <td><span class="status-badge status-normal">Normal</span></td>
+                            </tr>
+                            <tr>
+                                <td>+1 sd +2</td>
+                                <td><span class="status-badge status-warning">Berisiko Lebih</span></td>
+                                <td><span class="status-badge status-warning">Berisiko Lebih</span></td>
+                            </tr>
+                            <tr>
+                                <td>&gt; +2</td>
+                                <td><span class="status-badge status-danger">Gizi Lebih/Obesitas</span></td>
+                                <td><span class="status-badge status-danger">Lebih</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <hr>
+                
+                <h6>Standar Referensi:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-globe text-primary"></i> WHO Child Growth Standards 2006</li>
+                    <li><i class="fas fa-flag text-success"></i> Permenkes RI No. 2 Tahun 2020</li>
+                    <li><i class="fas fa-chart-bar text-info"></i> Growth Velocity WHO Standards</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> Aksi Cepat</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('easy_mode') }}" class="btn btn-success">
+                        <i class="fas fa-magic"></i> Mode Mudah
+                    </a>
+                    <a href="{{ url_for('growth_velocity') }}" class="btn btn-warning">
+                        <i class="fas fa-tachometer-alt"></i> Kecepatan Tumbuh
+                    </a>
+                    <a href="{{ url_for('kpsp') }}" class="btn btn-info">
+                        <i class="fas fa-clipboard-check"></i> Skrining KPSP
+                    </a>
+                    <a href="{{ url_for('reports') }}" class="btn btn-secondary">
+                        <i class="fas fa-file-alt"></i> Buat Laporan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Results Section -->
+<div class="row mb-4" id="resultsSection" style="display: none;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie"></i> 
+                    Hasil Perhitungan - 
+                    <span id="childNameResult"></span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 id="ageResult" class="text-primary">-</h3>
+                                <p class="text-muted">Usia Anak</p>
+                                <small id="ageDaysResult" class="text-muted">-</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 id="wfaResult" class="text-info">-</h3>
+                                <p class="text-muted">Berat untuk Usia</p>
+                                <small id="wfaStatus" class="text-muted">-</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 id="hfaResult" class="text-info">-</h3>
+                                <p class="text-muted">Tinggi untuk Usia</p>
+                                <small id="hfaStatus" class="text-muted">-</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 id="bfaResult" class="text-info">-</h3>
+                                <p class="text-muted">IMT untuk Usia</p>
+                                <small id="bfaStatus" class="text-muted">-</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Results -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Interpretasi Hasil WHO</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="whoInterpretation">
+                                    <p>Hasil interpretasi akan muncul di sini setelah perhitungan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Interpretasi Permenkes RI</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="permenkesInterpretation">
+                                    <p>Hasil interpretasi akan muncul di sini setelah perhitungan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Container -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Visualisasi Pertumbuhan</h6>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="changeChartType('line')">Line</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="changeChartType('bar')">Bar</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="changeChartType('radar')">Radar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="resultsChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Professional Tips -->
+<div class="feature-tips" id="professionalTips" style="display: none;">
+    <h5><i class="fas fa-user-md"></i> Tips Profesional</h5>
+    <div id="tipsContent">
+        <p>Tips profesional akan muncul di sini setelah perhitungan.</p>
+    </div>
+</div>
+
+<!-- Data Export -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-download"></i> Export Data</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Format Laporan</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-outline-danger" onclick="exportPDF()">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportExcel()">
+                                <i class="fas fa-file-excel"></i> Excel
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="exportCSV()">
+                                <i class="fas fa-file-csv"></i> CSV
+                            </button>
+                            <button class="btn btn-outline-info" onclick="exportChartImage()">
+                                <i class="fas fa-image"></i> Grafik
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Simpan Data</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" onclick="saveToProfile()">
+                                <i class="fas fa-user"></i> Simpan ke Profil
+                            </button>
+                            <button class="btn btn-secondary" onclick="shareResults()">
+                                <i class="fas fa-share"></i> Bagikan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let resultsChart;
+    let currentChartType = 'line';
+    let calculationData = {};
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeAgeInputMethods();
+        initializeChart();
+    });
+
+    // Initialize age input methods
+    function initializeAgeInputMethods() {
+        const ageMethods = document.querySelectorAll('input[name="ageMethod"]');
+        ageMethods.forEach(method => {
+            method.addEventListener('change', function() {
+                // Hide all age input fields
+                document.querySelectorAll('.age-input').forEach(input => {
+                    input.style.display = 'none';
+                });
+                
+                // Show selected input field
+                const selectedMethod = this.value;
+                const targetInput = document.getElementById(selectedMethod + 'Input');
+                if (targetInput) {
+                    targetInput.style.display = 'block';
+                }
+            });
+        });
+    }
+
+    // Load sample data
+    function loadSampleData() {
+        const currentMethod = document.querySelector('input[name="ageMethod"]:checked').value;
+        
+        // Sample data based on current method
+        switch(currentMethod) {
+            case 'months':
+                document.getElementById('childName').value = 'Budi Santoso';
+                document.getElementById('motherName').value = 'Siti Rahayu';
+                document.getElementById('ageMonthsValue').value = '18.5';
+                document.getElementById('gender').value = 'M';
+                break;
+            case 'days':
+                document.getElementById('childName').value = 'Anisa Putri';
+                document.getElementById('motherName').value = 'Dewi Lestari';
+                document.getElementById('ageDaysValue').value = '547';
+                document.getElementById('genderDays').value = 'F';
+                break;
+            case 'date':
+                document.getElementById('childName').value = 'Cahaya Mentari';
+                document.getElementById('motherName').value = 'Maya Sari';
+                document.getElementById('birthDate').value = '2022-07-15';
+                document.getElementById('genderDate').value = 'F';
+                break;
+            case 'both':
+                document.getElementById('childName').value = 'Angin Bayu';
+                document.getElementById('motherName').value = 'Ratna Wati';
+                document.getElementById('birthDateBoth').value = '2023-01-10';
+                document.getElementById('genderBoth').value = 'M';
+                break;
+        }
+        
+        // Common measurements
+        document.getElementById('weight').value = '10.50';
+        document.getElementById('height').value = '78.0';
+        document.getElementById('headCircumference').value = '45.5';
+        
+        showNotification('Data contoh dimuat!', 'success');
+    }
+
+    // Clear form
+    function clearForm() {
+        document.getElementById('calculatorForm').reset();
+        document.getElementById('resultsSection').style.display = 'none';
+        document.getElementById('professionalTips').style.display = 'none';
+        
+        if (resultsChart) {
+            resultsChart.destroy();
+        }
+        
+        showNotification('Form dikosongkan!', 'info');
+    }
+
+    // Calculate all measurements
+    function calculateAll() {
+        const formData = collectFormData();
+        
+        if (!validateFormData(formData)) {
+            return;
+        }
+        
+        showLoading();
+        
+        fetch('/api/calculate-all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showNotification(data.error, 'error');
+                return;
+            }
+            
+            displayResults(data);
+            calculationData = data;
+            hideLoading();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan saat perhitungan', 'error');
+            hideLoading();
+        });
+    }
+
+    // Collect form data
+    function collectFormData() {
+        const ageMethod = document.querySelector('input[name="ageMethod"]:checked').value;
+        let ageMonths = null;
+        let ageDays = null;
+        
+        switch(ageMethod) {
+            case 'months':
+                ageMonths = parseFloat(document.getElementById('ageMonthsValue').value);
+                break;
+            case 'days':
+                ageDays = parseInt(document.getElementById('ageDaysValue').value);
+                break;
+            case 'date':
+                const birthDate = new Date(document.getElementById('birthDate').value);
+                const today = new Date();
+                ageDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+                break;
+            case 'both':
+                const birthDateBoth = new Date(document.getElementById('birthDateBoth').value);
+                const measurementDate = new Date(document.getElementById('measurementDate').value);
+                ageDays = Math.floor((measurementDate - birthDateBoth) / (1000 * 60 * 60 * 24));
+                break;
+        }
+        
+        const gender = document.querySelector('#' + ageMethod + 'Input select[id*="gender"]').value;
+        
+        return {
+            childName: document.getElementById('childName').value,
+            motherName: document.getElementById('motherName').value,
+            weight: parseFloat(document.getElementById('weight').value),
+            height: parseFloat(document.getElementById('height').value),
+            head_circumference: parseFloat(document.getElementById('headCircumference').value) || null,
+            age_months: ageMonths,
+            age_days: ageDays,
+            gender: gender,
+            measurementType: document.getElementById('measurementType').value
+        };
+    }
+
+    // Validate form data
+    function validateFormData(data) {
+        if (!data.childName || !data.motherName) {
+            showNotification('Nama anak dan nama ibu harus diisi', 'error');
+            return false;
+        }
+        
+        if (!data.weight || !data.height) {
+            showNotification('Berat dan tinggi badan harus diisi', 'error');
+            return false;
+        }
+        
+        if (!data.age_months && !data.age_days) {
+            showNotification('Usia anak harus diisi', 'error');
+            return false;
+        }
+        
+        if (!data.gender) {
+            showNotification('Jenis kelamin harus dipilih', 'error');
+            return false;
+        }
+        
+        return true;
+    }
+
+    // Display results
+    function displayResults(data) {
+        document.getElementById('resultsSection').style.display = 'block';
+        document.getElementById('childNameResult').textContent = data.childName || 'Anak';
+        document.getElementById('ageResult').textContent = months_to_years_months(data.age_months);
+        document.getElementById('ageDaysResult').textContent = `(${data.age_days || Math.floor(data.age_months * 30.4375)} hari)`;
+        
+        // Display WHO results
+        if (data.results.wfa) {
+            document.getElementById('wfaResult').textContent = data.results.wfa.z_score;
+            document.getElementById('wfaStatus').textContent = data.results.wfa.classification_who.status;
+            document.getElementById('wfaResult').className = getStatusColor(data.results.wfa.z_score);
+        }
+        
+        if (data.results.hfa) {
+            document.getElementById('hfaResult').textContent = data.results.hfa.z_score;
+            document.getElementById('hfaStatus').textContent = data.results.hfa.classification_who.status;
+            document.getElementById('hfaResult').className = getStatusColor(data.results.hfa.z_score);
+        }
+        
+        if (data.results.bfa) {
+            document.getElementById('bfaResult').textContent = data.results.bfa.z_score;
+            document.getElementById('bfaStatus').textContent = data.results.bfa.classification_who.status;
+            document.getElementById('bfaResult').className = getStatusColor(data.results.bfa.z_score);
+        }
+        
+        // Display interpretations
+        displayInterpretations(data);
+        
+        // Display professional tips
+        displayProfessionalTips(data);
+        
+        // Update chart
+        updateChart(data);
+        
+        // Scroll to results
+        document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Get status color class
+    function getStatusColor(zScore) {
+        if (zScore < -2 || zScore > 2) {
+            return 'text-danger';
+        } else if (zScore >= -2 && zScore <= 2) {
+            return 'text-success';
+        } else {
+            return 'text-warning';
+        }
+    }
+
+    // Display interpretations
+    function displayInterpretations(data) {
+        const whoInterp = document.getElementById('whoInterpretation');
+        const permenkesInterp = document.getElementById('permenkesInterpretation');
+        
+        let whoContent = '<h6>Interpretasi WHO:</h6><ul>';
+        let permenkesContent = '<h6>Interpretasi Permenkes RI:</h6><ul>';
+        
+        Object.keys(data.results).forEach(key => {
+            const result = data.results[key];
+            const typeNames = {
+                'wfa': 'Berat untuk Usia',
+                'hfa': 'Tinggi untuk Usia', 
+                'wfh': 'Berat untuk Tinggi',
+                'bfa': 'IMT untuk Usia',
+                'hcfa': 'Lingkar Kepala untuk Usia'
+            };
+            
+            whoContent += `<li><strong>${typeNames[key]}:</strong> ${result.classification_who.status} (${result.z_score})</li>`;
+            permenkesContent += `<li><strong>${typeNames[key]}:</strong> ${result.classification_permenkes.status} (${result.z_score})</li>`;
+        });
+        
+        whoContent += '</ul>';
+        permenkesContent += '</ul>';
+        
+        whoInterp.innerHTML = whoContent;
+        permenkesInterp.innerHTML = permenkesContent;
+    }
+
+    // Display professional tips
+    function displayProfessionalTips(data) {
+        const tipsSection = document.getElementById('professionalTips');
+        const tipsContent = document.getElementById('tipsContent');
+        
+        // Get worst z-score for tips
+        const zScores = Object.values(data.results).map(r => Math.abs(r.z_score));
+        const maxZScore = Math.max(...zScores);
+        
+        const tips = getProfessionalTips('all', maxZScore);
+        
+        let tipsHTML = '<ul>';
+        tips.forEach(tip => {
+            tipsHTML += `<li>${tip}</li>`;
+        });
+        tipsHTML += '</ul>';
+        
+        tipsContent.innerHTML = tipsHTML;
+        tipsSection.style.display = 'block';
+    }
+
+    // Initialize chart
+    function initializeChart() {
+        const ctx = document.getElementById('resultsChart').getContext('2d');
+        
+        resultsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Visualisasi Hasil Perhitungan'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: -4,
+                        max: 4,
+                        title: {
+                            display: true,
+                            text: 'Z-Score'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Update chart
+    function updateChart(data) {
+        const labels = Object.keys(data.results).map(key => {
+            const names = {
+                'wfa': 'Berat untuk Usia',
+                'hfa': 'Tinggi untuk Usia',
+                'wfh': 'Berat untuk Tinggi',
+                'bfa': 'IMT untuk Usia',
+                'hcfa': 'Lingkar Kepala untuk Usia'
+            };
+            return names[key];
+        });
+        
+        const zScores = Object.values(data.results).map(result => result.z_score);
+        
+        resultsChart.data.labels = labels;
+        resultsChart.data.datasets = [{
+            label: 'Z-Score Anak',
+            data: zScores,
+            borderColor: 'rgb(139, 69, 19)',
+            backgroundColor: 'rgba(139, 69, 19, 0.1)',
+            tension: 0.4,
+            fill: true
+        }, {
+            label: 'Normal Range (-2 sd +2)',
+            data: new Array(zScores.length).fill(0),
+            borderColor: 'rgb(40, 167, 69)',
+            borderDash: [5, 5],
+            fill: false
+        }];
+        
+        resultsChart.update();
+    }
+
+    // Change chart type
+    function changeChartType(type) {
+        if (resultsChart) {
+            resultsChart.destroy();
+            
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            
+            resultsChart = new Chart(ctx, {
+                type: type,
+                data: resultsChart.data,
+                options: resultsChart.options
+            });
+        }
+    }
+
+    // Generate charts
+    function generateCharts() {
+        if (!calculationData.results) {
+            showNotification('Lakukan perhitungan terlebih dahulu', 'warning');
+            return;
+        }
+        
+        updateChart(calculationData);
+        showNotification('Grafik diperbarui!', 'success');
+    }
+
+    // Save calculation
+    function saveCalculation() {
+        if (!calculationData.results) {
+            showNotification('Lakukan perhitungan terlebih dahulu', 'warning');
+            return;
+        }
+        
+        showLoading();
+        
+        setTimeout(() => {
+            hideLoading();
+            showNotification('Data berhasil disimpan!', 'success');
+        }, 1000);
+    }
+
+    // Export functions
+    function exportPDF() {
+        showNotification('Mengekspor ke PDF...', 'info');
+        // Implementation for PDF export
+    }
+
+    function exportExcel() {
+        showNotification('Mengekspor ke Excel...', 'info');
+        // Implementation for Excel export
+    }
+
+    function exportCSV() {
+        showNotification('Mengekspor ke CSV...', 'info');
+        // Implementation for CSV export
+    }
+
+    function exportChartImage() {
+        if (resultsChart) {
+            const link = document.createElement('a');
+            link.download = 'growth-chart.png';
+            link.href = resultsChart.toBase64Image();
+            link.click();
+            showNotification('Grafik berhasil diunduh!', 'success');
+        }
+    }
+
+    // Utility functions
+    function saveToProfile() {
+        showNotification('Data disimpan ke profil!', 'success');
+    }
+
+    function shareResults() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Hasil Perhitungan anthroGizi',
+                text: 'Lihat hasil perhitungan gizi anak saya di anthroGizi',
+                url: window.location.href
+            });
+        } else {
+            showNotification('Fitur berbagi tidak tersedia', 'warning');
+        }
+    }
+
+    // Helper function to convert months to years and months
+    function months_to_years_months(months) {
+        const years = Math.floor(months / 12);
+        const remaining_months = Math.floor(months % 12);
+        
+        if (years === 0) {
+            return `${remaining_months} bulan`;
+        } else if (remaining_months === 0) {
+            return `${years} tahun`;
+        } else {
+            return `${years} tahun ${remaining_months} bulan`;
+        }
+    }
+</script>
+{% endblock %}

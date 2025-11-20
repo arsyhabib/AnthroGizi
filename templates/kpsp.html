@@ -1,0 +1,576 @@
+{% extends "base.html" %}
+
+{% block title %}KPSP Screening - anthroGizi v4.0.0{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1 class="display-6 fw-bold text-gradient">KPSP Screening</h1>
+                <p class="lead">Kuesioner Pra Skrining Perkembangan Anak Sesuai Permenkes RI</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-child me-2"></i>
+                        Formulir KPSP
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="kpspForm">
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Nama Anak</label>
+                                <input type="text" class="form-control" id="childName" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Usia (bulan)</label>
+                                <input type="number" class="form-control" id="childAge" min="0" max="72" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Jenis Kelamin</label>
+                                <select class="form-select" id="childGender" required>
+                                    <option value="">Pilih Gender</option>
+                                    <option value="L">Laki-laki</option>
+                                    <option value="P">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Age-specific questionnaire sections -->
+                        <div id="questionnaireSections">
+                            <!-- Section for 0-12 months -->
+                            <div class="questionnaire-section" data-age-range="0-12" style="display: none;">
+                                <h6 class="section-title mb-3">
+                                    <i class="fas fa-baby text-primary me-2"></i>
+                                    Perkembangan Bayi 0-12 Bulan
+                                </h6>
+                                <div class="questions-grid">
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">1. Apakah bayi dapat menengadah?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q1" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q1" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">2. Apakah bayi dapat tersenyum spontan?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q2" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q2" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">3. Apakah bayi dapat mengoceh?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q3" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q3" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section for 12-24 months -->
+                            <div class="questionnaire-section" data-age-range="12-24" style="display: none;">
+                                <h6 class="section-title mb-3">
+                                    <i class="fas fa-walking text-primary me-2"></i>
+                                    Perkembangan Anak 12-24 Bulan
+                                </h6>
+                                <div class="questions-grid">
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">1. Apakah anak dapat berjalan dengan stabil?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q4" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q4" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">2. Apakah anak dapat mengucapkan 5-10 kata?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q5" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q5" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">3. Apakah anak dapat menunjuk apa yang diminta?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q6" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q6" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section for 24-60 months -->
+                            <div class="questionnaire-section" data-age-range="24-60" style="display: none;">
+                                <h6 class="section-title mb-3">
+                                    <i class="fas fa-running text-primary me-2"></i>
+                                    Perkembangan Anak 24-60 Bulan
+                                </h6>
+                                <div class="questions-grid">
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">1. Apakah anak dapat melompat dengan dua kaki?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q7" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q7" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">2. Apakah anak dapat berbicara kalimat lengkap 4-5 kata?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q8" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q8" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="question-item mb-3">
+                                        <p class="question-text mb-2">3. Apakah anak dapat bermain bersama teman?</p>
+                                        <div class="answer-options">
+                                            <label class="form-check-input" type="radio" name="q9" value="ya">
+                                                <span class="form-check-label">Ya</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="q9" value="tidak">
+                                                <span class="form-check-label">Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="calculateKPSP()">
+                                <i class="fas fa-calculator me-2"></i>
+                                Hitung Hasil KPSP
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Results Panel -->
+            <div class="card shadow-sm border-0 mb-4" id="resultsPanel" style="display: none;">
+                <div class="card-header bg-gradient-success text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Hasil KPSP
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="kpspResults">
+                        <div class="result-summary mb-3">
+                            <h5 class="text-center mb-3">Interpretasi Hasil</h5>
+                            <div class="score-display text-center mb-3">
+                                <div class="score-circle">
+                                    <span id="totalScore">0</span>
+                                    <small>/</small>
+                                    <span id="maxScore">0</span>
+                                </div>
+                                <p class="text-muted mt-2">Skor Total</p>
+                            </div>
+                        </div>
+                        
+                        <div class="interpretation-result mb-3">
+                            <div class="alert" id="resultAlert">
+                                <div class="result-icon mb-2">
+                                    <i class="fas fa-check-circle" id="resultIcon"></i>
+                                </div>
+                                <h6 id="resultTitle">Hasil Interpretasi</h6>
+                                <p id="resultDescription" class="mb-0">Deskripsi hasil akan muncul di sini</p>
+                            </div>
+                        </div>
+
+                        <div class="recommendations">
+                            <h6 class="mb-2">Rekomendasi:</h6>
+                            <ul id="recommendationsList" class="list-unstyled">
+                                <!-- Recommendations will be populated here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Tips -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Tips Profesional
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="tip-item">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        <span>Lakukan screening secara rutin sesuai jadwal KMS</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-clock text-info me-2"></i>
+                        <span>Pilih waktu saat anak dalam kondisi baik dan tidak lelah</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-heart text-danger me-2"></i>
+                        <span>Berikan dukungan dan dorongan selama pemeriksaan</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-user-md text-success me-2"></i>
+                        <span>Konsultasikan hasil dengan tenaga kesehatan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.questionnaire-section {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.question-item {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.question-text {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.answer-options {
+    margin-top: 0.5rem;
+}
+
+.answer-options .form-check-inline {
+    margin-right: 1rem;
+}
+
+.score-circle {
+    width: 120px;
+    height: 120px;
+    border: 4px solid var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0 auto;
+}
+
+.result-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.tip-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tip-item:last-child {
+    border-bottom: none;
+}
+
+.alert-success {
+    background-color: var(--success-bg);
+    border-color: var(--success-border);
+    color: var(--success-text);
+}
+
+.alert-warning {
+    background-color: var(--warning-bg);
+    border-color: var(--warning-border);
+    color: var(--warning-text);
+}
+
+.alert-danger {
+    background-color: var(--danger-bg);
+    border-color: var(--danger-border);
+    color: var(--danger-text);
+}
+</style>
+
+<script>
+// KPSP Questionnaire System
+class KPSPSystem {
+    constructor() {
+        this.questions = {
+            '0-12': [
+                { id: 'q1', text: 'Apakah bayi dapat menengadah?' },
+                { id: 'q2', text: 'Apakah bayi dapat tersenyum spontan?' },
+                { id: 'q3', text: 'Apakah bayi dapat mengoceh?' }
+            ],
+            '12-24': [
+                { id: 'q4', text: 'Apakah anak dapat berjalan dengan stabil?' },
+                { id: 'q5', text: 'Apakah anak dapat mengucapkan 5-10 kata?' },
+                { id: 'q6', text: 'Apakah anak dapat menunjuk apa yang diminta?' }
+            ],
+            '24-60': [
+                { id: 'q7', text: 'Apakah anak dapat melompat dengan dua kaki?' },
+                { id: 'q8', text: 'Apakah anak dapat berbicara kalimat lengkap 4-5 kata?' },
+                { id: 'q9', text: 'Apakah anak dapat bermain bersama teman?' }
+            ]
+        };
+    }
+
+    showAppropriateSection(age) {
+        // Hide all sections
+        document.querySelectorAll('.questionnaire-section').forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Show appropriate section based on age
+        let sectionToShow = null;
+        if (age >= 0 && age <= 12) {
+            sectionToShow = document.querySelector('[data-age-range="0-12"]');
+        } else if (age > 12 && age <= 24) {
+            sectionToShow = document.querySelector('[data-age-range="12-24"]');
+        } else if (age > 24 && age <= 60) {
+            sectionToShow = document.querySelector('[data-age-range="24-60"]');
+        }
+
+        if (sectionToShow) {
+            sectionToShow.style.display = 'block';
+        }
+    }
+
+    calculateResults() {
+        const age = parseInt(document.getElementById('childAge').value);
+        const questions = this.getQuestionsForAge(age);
+        let score = 0;
+        let totalQuestions = 0;
+
+        questions.forEach(question => {
+            const answer = document.querySelector(`input[name="${question.id}"]:checked`);
+            if (answer && answer.value === 'ya') {
+                score++;
+            }
+            totalQuestions++;
+        });
+
+        return {
+            score: score,
+            total: totalQuestions,
+            percentage: (score / totalQuestions) * 100
+        };
+    }
+
+    getQuestionsForAge(age) {
+        if (age >= 0 && age <= 12) return this.questions['0-12'];
+        if (age > 12 && age <= 24) return this.questions['12-24'];
+        if (age > 24 && age <= 60) return this.questions['24-60'];
+        return [];
+    }
+
+    getInterpretation(percentage) {
+        if (percentage >= 80) {
+            return {
+                status: 'normal',
+                title: 'Perkembangan Normal',
+                description: 'Anak menunjukkan perkembangan sesuai usia.',
+                recommendations: [
+                    'Lanjutkan stimulasi rutin di rumah',
+                    'Ikuti jadwal KMS sesuai usia',
+                    'Berikan nutrisi yang seimbang'
+                ],
+                alertClass: 'alert-success',
+                icon: 'fas fa-check-circle text-success'
+            };
+        } else if (percentage >= 60) {
+            return {
+                status: 'meragukan',
+                title: 'Perkembangan Meragukan',
+                description: 'Perlu perhatian khusus dan stimulasi tambahan.',
+                recommendations: [
+                    'Konsultasikan dengan tenaga kesehatan',
+                    'Lakukan stimulasi perkembangan secara intensif',
+                    'Lakukan pemeriksaan ulang dalam 1-2 bulan'
+                ],
+                alertClass: 'alert-warning',
+                icon: 'fas fa-exclamation-triangle text-warning'
+            };
+        } else {
+            return {
+                status: 'terlambat',
+                title: 'Perkembangan Terlambat',
+                description: 'Perlu intervensi segera dari tenaga kesehatan.',
+                recommendations: [
+                    'Segera konsultasi dengan dokter anak',
+                    'Rujuk ke layanan intervensi dini',
+                    'Lakukan pemeriksaan menyeluruh'
+                ],
+                alertClass: 'alert-danger',
+                icon: 'fas fa-exclamation-circle text-danger'
+            };
+        }
+    }
+}
+
+// Initialize KPSP System
+const kpspSystem = new KPSPSystem();
+
+// Event Listeners
+document.getElementById('childAge').addEventListener('input', function() {
+    const age = parseInt(this.value);
+    if (age >= 0 && age <= 60) {
+        kpspSystem.showAppropriateSection(age);
+    }
+});
+
+// Calculate KPSP Results
+function calculateKPSP() {
+    // Validate form
+    const name = document.getElementById('childName').value;
+    const age = document.getElementById('childAge').value;
+    const gender = document.getElementById('childGender').value;
+
+    if (!name || !age || !gender) {
+        showNotification('Harap lengkapi semua data anak', 'warning');
+        return;
+    }
+
+    // Check if all questions are answered
+    const currentSection = document.querySelector('.questionnaire-section[style="display: block"]');
+    if (!currentSection) {
+        showNotification('Usia anak tidak dalam rentang KPSP', 'warning');
+        return;
+    }
+
+    const unanswered = currentSection.querySelectorAll('input[type="radio"]:not(:checked)');
+    if (unanswered.length > 0) {
+        showNotification('Harap jawab semua pertanyaan', 'warning');
+        return;
+    }
+
+    // Calculate results
+    const results = kpspSystem.calculateResults();
+    const interpretation = kpspSystem.getInterpretation(results.percentage);
+
+    // Display results
+    displayKPSPResults(results, interpretation);
+    
+    // Show results panel
+    document.getElementById('resultsPanel').style.display = 'block';
+    
+    // Scroll to results
+    document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function displayKPSPResults(results, interpretation) {
+    // Update score display
+    document.getElementById('totalScore').textContent = results.score;
+    document.getElementById('maxScore').textContent = results.total;
+
+    // Update interpretation
+    const resultAlert = document.getElementById('resultAlert');
+    resultAlert.className = `alert ${interpretation.alertClass}`;
+    
+    document.getElementById('resultIcon').className = interpretation.icon;
+    document.getElementById('resultTitle').textContent = interpretation.title;
+    document.getElementById('resultDescription').textContent = interpretation.description;
+
+    // Update recommendations
+    const recommendationsList = document.getElementById('recommendationsList');
+    recommendationsList.innerHTML = '';
+    interpretation.recommendations.forEach(rec => {
+        const li = document.createElement('li');
+        li.innerHTML = `<i class="fas fa-arrow-right text-primary me-2"></i>${rec}`;
+        recommendationsList.appendChild(li);
+    });
+
+    // Add success notification
+    showNotification('KPSP berhasil dihitung!', 'success');
+}
+
+// Initialize page
+function initializeKPSPPage() {
+    // Set initial state
+    document.getElementById('resultsPanel').style.display = 'none';
+    
+    // Add form validation
+    const inputs = document.querySelectorAll('#kpspForm input, #kpspForm select');
+    inputs.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.checkValidity()) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            }
+        });
+    });
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', initializeKPSPPage);
+</script>
+{% endblock %}

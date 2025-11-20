@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ app_title }}{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Theme CSS -->
+    <style>
+        :root {
+            --primary-color: {{ theme.primary }};
+            --secondary-color: {{ theme.secondary }};
+            --accent-color: {{ theme.accent }};
+            --bg-color: {{ theme.bg }};
+            --card-color: {{ theme.card }};
+            --text-color: {{ theme.text }};
+            --border-color: {{ theme.border }};
+            --shadow-color: {{ theme.shadow }};
+            --gradient-bg: {{ theme.gradient }};
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient-bg);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Crimson Text', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--card-color);
+            box-shadow: 0 2px 10px var(--shadow-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Theme Selector */
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .theme-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option.active {
+            border-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .theme-pink { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+        .theme-blue { background: linear-gradient(135deg, #d4fc79, #96e6a1); }
+        .theme-lavender { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+
+        /* Mode Selector */
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .mode-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.parent {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .mode-btn.healthcare {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        /* Motivational Message */
+        .motivational-banner {
+            background: var(--gradient-bg);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px 0;
+            min-height: 80vh;
+        }
+
+        .section {
+            margin-bottom: 60px;
+            background: var(--card-color);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        .section h2 {
+            font-family: 'Crimson Text', serif;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section h3 {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin: 30px 0 15px 0;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            background: var(--card-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        .card-header {
+            background: var(--gradient-bg);
+            color: white;
+            border: none;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Forms */
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+            background: var(--card-color);
+            color: var(--text-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(var(--primary-color), 0.25);
+        }
+
+        /* Feature Tips */
+        .feature-tips {
+            background: linear-gradient(135deg, rgba(var(--primary-color), 0.1), rgba(var(--secondary-color), 0.1));
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .feature-tips h5 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-tips ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .feature-tips li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(var(--primary-color), 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-tips li:last-child {
+            border-bottom: none;
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+            background: var(--card-color);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 15px var(--shadow-color);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(var(--primary-color), 0.3);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Premium Badge */
+        .premium-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-normal { background: #28a745; }
+        .status-warning { background: #ffc107; color: var(--text-color); }
+        .status-danger { background: #dc3545; }
+        .status-info { background: #17a2b8; }
+
+        /* Pesan Pembuka */
+        .welcome-message {
+            background: var(--gradient-bg);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-message h3 {
+            font-family: 'Crimson Text', serif;
+            margin-bottom: 15px;
+        }
+
+        /* Mode Easy */
+        .easy-mode-card {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+            border: 2px solid #28a745;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        /* Growth Velocity */
+        .velocity-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .velocity-normal {
+            background: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .velocity-fast {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+        }
+
+        .velocity-slow {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-color);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer h3 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .footer p {
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .navbar-nav .nav-link {
+                margin: 5px 0;
+            }
+
+            .theme-selector, .mode-selector {
+                justify-content: center;
+                margin-top: 10px;
+            }
+        }
+
+        /* Custom Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Motivational Banner -->
+    <div class="motivational-banner" id="motivationalBanner" style="display: none;">
+        <div class="container">
+            <span id="motivationalText">{{ motivational_message }}</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo mb-3">
+                    <i class="fas fa-baby" style="font-size: 4rem;"></i>
+                </div>
+                <h1>{{ app_title }}</h1>
+                <p class="subtitle">{{ app_description }}</p>
+                
+                <!-- Premium Badge -->
+                <div class="mt-3">
+                    <span class="premium-badge">
+                        <i class="fas fa-crown"></i> v{{ app_version }} REVOLUTIONARY
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                            <i class="fas fa-home"></i> Beranda
+                        </a>
+                    </li>
+                    
+                    <!-- Calculator Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calculator"></i> Kalkulator
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('calculator') }}">
+                                <i class="fas fa-chart-line"></i> Kalkulator Lengkap
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('easy_mode') }}">
+                                <i class="fas fa-magic"></i> Mode Mudah
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('growth_velocity') }}">
+                                <i class="fas fa-tachometer-alt"></i> Kecepatan Tumbuh
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'kpsp' %}active{% endif %}" href="{{ url_for('kpsp') }}">
+                            <i class="fas fa-clipboard-check"></i> KPSP
+                        </a>
+                    </li>
+                    
+                    <!-- Resources Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-book"></i> Sumber Daya
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('library') }}">
+                                <i class="fas fa-book-open"></i> Perpustakaan
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('videos') }}">
+                                <i class="fas fa-video"></i> Video Edukasi
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'reports' %}active{% endif %}" href="{{ url_for('reports') }}">
+                            <i class="fas fa-file-alt"></i> Laporan
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'premium' %}active{% endif %}" href="{{ url_for('premium') }}">
+                            <i class="fas fa-crown"></i> Premium
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}" href="{{ url_for('about') }}">
+                            <i class="fas fa-info-circle"></i> Tentang
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Theme and Mode Selectors -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Theme Selector -->
+                    <div class="theme-selector">
+                        <div class="theme-option theme-pink {% if theme.name == 'Pink Pastel' %}active{% endif %}" 
+                             onclick="setTheme('pink_pastel')" title="Pink Pastel"></div>
+                        <div class="theme-option theme-blue {% if theme.name == 'Blue Pastel' %}active{% endif %}" 
+                             onclick="setTheme('blue_pastel')" title="Blue Pastel"></div>
+                        <div class="theme-option theme-lavender {% if theme.name == 'Lavender Pastel' %}active{% endif %}" 
+                             onclick="setTheme('lavender_pastel')" title="Lavender Pastel"></div>
+                    </div>
+                    
+                    <!-- Mode Selector -->
+                    <div class="mode-selector">
+                        <button class="mode-btn parent {% if mode == 'parent' %}active{% endif %}" 
+                                onclick="setMode('parent')" title="Mode Orang Tua">
+                            <i class="fas fa-user-friends"></i>
+                        </button>
+                        <button class="mode-btn healthcare {% if mode == 'healthcare' %}active{% endif %}" 
+                                onclick="setMode('healthcare')" title="Mode Nakes">
+                            <i class="fas fa-user-md"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <h3>{{ app_title }}</h3>
+            <p>Versi {{ app_version }} - Revolutionary Edition</p>
+            <p>Aplikasi berbasis WHO Child Growth Standards dengan fitur revolusioner</p>
+            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
+                <i class="fas fa-calendar"></i> {{ "now"|date("Y") }} | 
+                <i class="fas fa-users"></i> Habib Arsy dan TIM | 
+                <i class="fas fa-phone"></i> +{{ contact_wa }} | 
+                <i class="fas fa-code"></i> Revolutionary Features
+            </p>
+            
+            <!-- Premium Footer -->
+            <div class="mt-4">
+                <span class="premium-badge">
+                    <i class="fas fa-gem"></i> Premium Features Available
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // Set theme
+        function setTheme(theme) {
+            showLoading();
+            
+            fetch('/api/theme', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ theme: theme })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    document.querySelectorAll('.theme-option').forEach(option => {
+                        option.classList.remove('active');
+                    });
+                    event.target.classList.add('active');
+                    
+                    // Reload page to apply theme
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                }
+                hideLoading();
+            })
+            .catch(error => {
+                console.error('Error setting theme:', error);
+                hideLoading();
+            });
+        }
+
+        // Set mode
+        function setMode(mode) {
+            showLoading();
+            
+            fetch('/api/mode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mode: mode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    document.querySelectorAll('.mode-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    event.target.classList.add('active');
+                    
+                    // Show success message
+                    showNotification(`Mode ${mode} diaktifkan`, 'success');
+                    
+                    // Reload page to apply mode changes
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+                hideLoading();
+            })
+            .catch(error => {
+                console.error('Error setting mode:', error);
+                hideLoading();
+            });
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed`;
+            notification.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                animation: slideInRight 0.5s ease;
+            `;
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Update motivational message every 20 seconds
+        function updateMotivationalMessage() {
+            fetch('/api/motivational-message')
+                .then(response => response.json())
+                .then(data => {
+                    const banner = document.getElementById('motivationalBanner');
+                    const text = document.getElementById('motivationalText');
+                    
+                    if (banner && text) {
+                        text.textContent = data.message;
+                        banner.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching motivational message:', error);
+                });
+        }
+
+        // Initialize motivational message rotation
+        setInterval(updateMotivationalMessage, 20000);
+
+        // Initial motivational message
+        updateMotivationalMessage();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add fade-in animation to elements
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections
+        document.querySelectorAll('.card, .section').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                if (alert.parentElement) {
+                    alert.remove();
+                }
+            });
+        }, 5000);
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

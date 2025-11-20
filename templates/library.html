@@ -1,0 +1,685 @@
+{% extends "base.html" %}
+
+{% block title %}Library - anthroGizi v4.0.0{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold text-gradient">Enhanced Library</h1>
+                    <p class="lead">Kumpulan sumber daya dan referensi gizi anak</p>
+                </div>
+                <div class="language-toggle">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary active" onclick="setLanguage('id')" id="lang-id">
+                            <i class="fas fa-flag me-1"></i> Bahasa
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="setLanguage('en')" id="lang-en">
+                            <i class="fas fa-flag-usa me-1"></i> English
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" class="form-control" id="searchInput" placeholder="Cari artikel, topik, atau kata kunci...">
+                <button class="btn btn-primary" type="button" onclick="performSearch()">
+                    <i class="fas fa-search me-1"></i>
+                    <span class="lang-id">Cari</span>
+                    <span class="lang-en" style="display: none;">Search</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <select class="form-select" id="categoryFilter" onchange="filterByCategory()">
+                <option value="" class="lang-id">Semua Kategori</option>
+                <option value="" class="lang-en" style="display: none;">All Categories</option>
+                <option value="nutrition" class="lang-id">Nutrisi</option>
+                <option value="nutrition" class="lang-en" style="display: none;">Nutrition</option>
+                <option value="growth" class="lang-id">Pertumbuhan</option>
+                <option value="growth" class="lang-en" style="display: none;">Growth</option>
+                <option value="development" class="lang-id">Perkembangan</option>
+                <option value="development" class="lang-en" style="display: none;">Development</option>
+                <option value="health" class="lang-id">Kesehatan</option>
+                <option value="health" class="lang-en" style="display: none;">Health</option>
+                <option value="feeding" class="lang-id">Pemberian Makan</option>
+                <option value="feeding" class="lang-en" style="display: none;">Feeding</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Featured Articles Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="section-title mb-3">
+                <i class="fas fa-star text-warning me-2"></i>
+                <span class="lang-id">Artikel Unggulan</span>
+                <span class="lang-en" style="display: none;">Featured Articles</span>
+            </h3>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <div class="card featured-article h-100">
+                <div class="card-body">
+                    <div class="article-badge mb-2">
+                        <span class="badge bg-primary">
+                            <span class="lang-id">Nutrisi</span>
+                            <span class="lang-en" style="display: none;">Nutrition</span>
+                        </span>
+                    </div>
+                    <h5 class="card-title">
+                        <span class="lang-id">MPASI yang Tepat untuk Bayi 6 Bulan</span>
+                        <span class="lang-en" style="display: none;">Proper Complementary Feeding for 6-Month Babies</span>
+                    </h5>
+                    <p class="card-text text-muted">
+                        <span class="lang-id">Panduan lengkap memulai MPASI dengan aman dan bergizi untuk bayi usia 6 bulan sesuai standar WHO.</span>
+                        <span class="lang-en" style="display: none;">Complete guide to safely starting complementary feeding with nutritious foods for 6-month babies according to WHO standards.</span>
+                    </p>
+                    <div class="article-meta mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            <span class="lang-id">15 menit baca</span>
+                            <span class="lang-en" style="display: none;">15 min read</span>
+                        </small>
+                        <small class="text-muted ms-3">
+                            <i class="fas fa-user-md me-1"></i>
+                            <span class="lang-id">Ditinjau oleh ahli gizi</span>
+                            <span class="lang-en" style="display: none;">Reviewed by nutritionist</span>
+                        </small>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="openArticle('mpasi-6-month')">
+                        <span class="lang-id">Baca Selengkapnya</span>
+                        <span class="lang-en" style="display: none;">Read More</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <div class="card featured-article h-100">
+                <div class="card-body">
+                    <div class="article-badge mb-2">
+                        <span class="badge bg-success">
+                            <span class="lang-id">Pertumbuhan</span>
+                            <span class="lang-en" style="display: none;">Growth</span>
+                        </span>
+                    </div>
+                    <h5 class="card-title">
+                        <span class="lang-id">Memahami Kurva Pertumbuhan WHO</span>
+                        <span class="lang-en" style="display: none;">Understanding WHO Growth Charts</span>
+                    </h5>
+                    <p class="card-text text-muted">
+                        <span class="lang-id">Interpretasi kurva pertumbuhan dan arti Z-score untuk monitoring perkembangan anak.</span>
+                        <span class="lang-en" style="display: none;">Interpreting growth charts and understanding Z-scores for monitoring child development.</span>
+                    </p>
+                    <div class="article-meta mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            <span class="lang-id">12 menit baca</span>
+                            <span class="lang-en" style="display: none;">12 min read</span>
+                        </small>
+                        <small class="text-muted ms-3">
+                            <i class="fas fa-chart-line me-1"></i>
+                            <span class="lang-id">Bersumber data WHO</span>
+                            <span class="lang-en" style="display: none;">WHO data sourced</span>
+                        </small>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="openArticle('who-growth-charts')">
+                        <span class="lang-id">Baca Selengkapnya</span>
+                        <span class="lang-en" style="display: none;">Read More</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <div class="card featured-article h-100">
+                <div class="card-body">
+                    <div class="article-badge mb-2">
+                        <span class="badge bg-info">
+                            <span class="lang-id">Kesehatan</span>
+                            <span class="lang-en" style="display: none;">Health</span>
+                        </span>
+                    </div>
+                    <h5 class="card-title">
+                        <span class="lang-id">Imunisasi dan Gizi: Hubungan yang Penting</span>
+                        <span class="lang-en" style="display: none;">Immunization and Nutrition: The Important Connection</span>
+                    </h5>
+                    <p class="card-text text-muted">
+                        <span class="lang-id">Pentingnya status gizi yang baik untuk respons imunisasi yang optimal pada anak.</span>
+                        <span class="lang-en" style="display: none;">The importance of good nutritional status for optimal immunization response in children.</span>
+                    </p>
+                    <div class="article-meta mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            <span class="lang-id">10 menit baca</span>
+                            <span class="lang-en" style="display: none;">10 min read</span>
+                        </small>
+                        <small class="text-muted ms-3">
+                            <i class="fas fa-syringe me-1"></i>
+                            <span class="lang-id">Sesuai jadwal imunisasi</span>
+                            <span class="lang-en" style="display: none;">Per immunization schedule</span>
+                        </small>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="openArticle('immunization-nutrition')">
+                        <span class="lang-id">Baca Selengkapnya</span>
+                        <span class="lang-en" style="display: none;">Read More</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article Categories -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-book me-2"></i>
+                        <span class="lang-id">Koleksi Artikel</span>
+                        <span class="lang-en" style="display: none;">Article Collection</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="articleGrid">
+                        <!-- Articles will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article Modal -->
+    <div class="modal fade" id="articleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="articleModalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="articleModalBody">
+                    <!-- Article content will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <span class="lang-id">Tutup</span>
+                        <span class="lang-en" style="display: none;">Close</span>
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="saveArticle()">
+                        <i class="fas fa-bookmark me-1"></i>
+                        <span class="lang-id">Simpan Artikel</span>
+                        <span class="lang-en" style="display: none;">Save Article</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.featured-article {
+    border-left: 4px solid var(--primary-color);
+    transition: transform 0.2s ease;
+}
+
+.featured-article:hover {
+    transform: translateY(-2px);
+}
+
+.article-badge .badge {
+    font-size: 0.75rem;
+}
+
+.article-meta {
+    font-size: 0.875rem;
+}
+
+.article-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.article-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.article-preview {
+    max-height: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.section-title {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.language-toggle .btn.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+#articleGrid .col-md-6 {
+    margin-bottom: 1.5rem;
+}
+</style>
+
+<script>
+// Library System
+class LibrarySystem {
+    constructor() {
+        this.currentLanguage = 'id';
+        this.articles = this.initializeArticles();
+        this.filteredArticles = [...this.articles];
+    }
+
+    initializeArticles() {
+        return [
+            {
+                id: 'breastfeeding-guide',
+                title: {
+                    id: 'Panduan Menyusui yang Efektif',
+                    en: 'Effective Breastfeeding Guide'
+                },
+                category: 'nutrition',
+                description: {
+                    id: 'Teknik dan posisi menyusui yang benar untuk kenyamanan ibu dan bayi.',
+                    en: 'Proper breastfeeding techniques and positions for mother and baby comfort.'
+                },
+                readTime: 8,
+                tags: ['menyusui', 'ASI', 'teknik'],
+                content: {
+                    id: 'Konten lengkap tentang panduan menyusui...',
+                    en: 'Complete content about breastfeeding guide...'
+                }
+            },
+            {
+                id: 'solid-foods-introduction',
+                title: {
+                    id: 'Pengenalan Makanan Padat untuk Bayi',
+                    en: 'Introducing Solid Foods for Babies'
+                },
+                category: 'feeding',
+                description: {
+                    id: 'Kapan dan bagaimana memulai makanan padat untuk bayi usia 6 bulan ke atas.',
+                    en: 'When and how to start solid foods for babies aged 6 months and above.'
+                },
+                readTime: 12,
+                tags: ['MPASI', 'makanan padat', '6 bulan'],
+                content: {
+                    id: 'Konten lengkap tentang pengenalan makanan padat...',
+                    en: 'Complete content about introducing solid foods...'
+                }
+            },
+            {
+                id: 'growth-milestones',
+                title: {
+                    id: 'Milestone Pertumbuhan Anak',
+                    en: 'Child Growth Milestones'
+                },
+                category: 'growth',
+                description: {
+                    id: 'Panduan milestone perkembangan anak dari 0-5 tahun sesuai standar WHO.',
+                    en: 'Guide to child development milestones from 0-5 years according to WHO standards.'
+                },
+                readTime: 15,
+                tags: ['milestone', 'perkembangan', 'WHO'],
+                content: {
+                    id: 'Konten lengkap tentang milestone pertumbuhan...',
+                    en: 'Complete content about growth milestones...'
+                }
+            },
+            {
+                id: 'nutrition-deficiency',
+                title: {
+                    id: 'Mengenali dan Mencegah Kekurangan Gizi',
+                    en: 'Recognizing and Preventing Nutritional Deficiency'
+                },
+                category: 'health',
+                description: {
+                    id: 'Gejala dan pencegahan kekurangan gizi pada anak balita.',
+                    en: 'Symptoms and prevention of nutritional deficiency in toddlers.'
+                },
+                readTime: 10,
+                tags: ['gizi', 'defisiensi', 'pencegahan'],
+                content: {
+                    id: 'Konten lengkap tentang kekurangan gizi...',
+                    en: 'Complete content about nutritional deficiency...'
+                }
+            },
+            {
+                id: 'development-stimulation',
+                title: {
+                    id: 'Stimulasi Perkembangan Anak',
+                    en: 'Child Development Stimulation'
+                },
+                category: 'development',
+                description: {
+                    id: 'Aktivitas dan permainan edukatif untuk stimulasi perkembangan anak.',
+                    en: 'Activities and educational games for child development stimulation.'
+                },
+                readTime: 11,
+                tags: ['stimulasi', 'permainan edukatif', 'aktivitas'],
+                content: {
+                    id: 'Konten lengkap tentang stimulasi perkembangan...',
+                    en: 'Complete content about development stimulation...'
+                }
+            },
+            {
+                id: 'healthy-snacks',
+                title: {
+                    id: 'Camilan Sehat untuk Anak',
+                    en: 'Healthy Snacks for Children'
+                },
+                category: 'nutrition',
+                description: {
+                    id: 'Pilihan camilan sehat dan bergizi untuk anak usia balita.',
+                    en: 'Healthy and nutritious snack options for toddler-aged children.'
+                },
+                readTime: 7,
+                tags: ['camilan', 'sehat', 'balita'],
+                content: {
+                    id: 'Konten lengkap tentang camilan sehat...',
+                    en: 'Complete content about healthy snacks...'
+                }
+            },
+            {
+                id: 'sleep-nutrition',
+                title: {
+                    id: 'Hubungan Tidur dan Gizi Anak',
+                    en: 'The Connection Between Sleep and Child Nutrition'
+                },
+                category: 'health',
+                description: {
+                    id: 'Pentingnya pola tidur yang baik untuk kesehatan dan gizi anak.',
+                    en: 'The importance of good sleep patterns for child health and nutrition.'
+                },
+                readTime: 9,
+                tags: ['tidur', 'kesehatan', 'gizi'],
+                content: {
+                    id: 'Konten lengkap tentang tidur dan gizi...',
+                    en: 'Complete content about sleep and nutrition...'
+                }
+            },
+            {
+                id: 'feeding-problems',
+                title: {
+                    id: 'Mengatasi Masalah Makan pada Anak',
+                    en: 'Addressing Feeding Problems in Children'
+                },
+                category: 'feeding',
+                description: {
+                    id: 'Strategi mengatasi anak picky eater dan masalah makan lainnya.',
+                    en: 'Strategies for dealing with picky eaters and other feeding problems.'
+                },
+                readTime: 13,
+                tags: ['masalah makan', 'picky eater', 'strategi'],
+                content: {
+                    id: 'Konten lengkap tentang masalah makan...',
+                    en: 'Complete content about feeding problems...'
+                }
+            }
+        ];
+    }
+
+    setLanguage(lang) {
+        this.currentLanguage = lang;
+        
+        // Update button states
+        document.querySelectorAll('.language-toggle .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById(`lang-${lang}`).classList.add('active');
+        
+        // Update language elements
+        document.querySelectorAll('.lang-id').forEach(el => {
+            el.style.display = lang === 'id' ? 'inline' : 'none';
+        });
+        document.querySelectorAll('.lang-en').forEach(el => {
+            el.style.display = lang === 'en' ? 'inline' : 'none';
+        });
+        
+        // Refresh article display
+        this.renderArticles();
+    }
+
+    filterByCategory(category) {
+        if (!category) {
+            this.filteredArticles = [...this.articles];
+        } else {
+            this.filteredArticles = this.articles.filter(article => 
+                article.category === category
+            );
+        }
+        this.renderArticles();
+    }
+
+    searchArticles(query) {
+        const searchTerm = query.toLowerCase();
+        this.filteredArticles = this.articles.filter(article => {
+            const title = article.title[this.currentLanguage].toLowerCase();
+            const description = article.description[this.currentLanguage].toLowerCase();
+            const tags = article.tags.join(' ').toLowerCase();
+            
+            return title.includes(searchTerm) || 
+                   description.includes(searchTerm) || 
+                   tags.includes(searchTerm);
+        });
+        this.renderArticles();
+    }
+
+    renderArticles() {
+        const grid = document.getElementById('articleGrid');
+        grid.innerHTML = '';
+        
+        this.filteredArticles.forEach(article => {
+            const articleCard = this.createArticleCard(article);
+            grid.appendChild(articleCard);
+        });
+    }
+
+    createArticleCard(article) {
+        const col = document.createElement('div');
+        col.className = 'col-md-6';
+        
+        const categoryColors = {
+            nutrition: 'primary',
+            growth: 'success',
+            development: 'info',
+            health: 'warning',
+            feeding: 'danger'
+        };
+        
+        const color = categoryColors[article.category] || 'secondary';
+        
+        col.innerHTML = `
+            <div class="card article-card h-100" onclick="librarySystem.openArticle('${article.id}')">
+                <div class="card-body">
+                    <div class="article-badge mb-2">
+                        <span class="badge bg-${color}">
+                            ${this.getCategoryName(article.category)}
+                        </span>
+                    </div>
+                    <h6 class="card-title">${article.title[this.currentLanguage]}</h6>
+                    <p class="card-text article-preview text-muted">${article.description[this.currentLanguage]}</p>
+                    <div class="article-meta d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            ${article.readTime} ${this.currentLanguage === 'id' ? 'menit baca' : 'min read'}
+                        </small>
+                        <div class="article-tags">
+                            ${article.tags.slice(0, 2).map(tag => 
+                                `<span class="badge bg-light text-dark me-1">${tag}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        return col;
+    }
+
+    getCategoryName(category) {
+        const categoryNames = {
+            id: {
+                nutrition: 'Nutrisi',
+                growth: 'Pertumbuhan',
+                development: 'Perkembangan',
+                health: 'Kesehatan',
+                feeding: 'Pemberian Makan'
+            },
+            en: {
+                nutrition: 'Nutrition',
+                growth: 'Growth',
+                development: 'Development',
+                health: 'Health',
+                feeding: 'Feeding'
+            }
+        };
+        
+        return categoryNames[this.currentLanguage][category] || category;
+    }
+
+    openArticle(articleId) {
+        const article = this.articles.find(a => a.id === articleId);
+        if (!article) return;
+        
+        document.getElementById('articleModalTitle').textContent = article.title[this.currentLanguage];
+        document.getElementById('articleModalBody').innerHTML = `
+            <div class="article-content">
+                <div class="article-header mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-primary">${this.getCategoryName(article.category)}</span>
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            ${article.readTime} ${this.currentLanguage === 'id' ? 'menit baca' : 'min read'}
+                        </small>
+                    </div>
+                    <div class="article-tags mb-3">
+                        ${article.tags.map(tag => 
+                            `<span class="badge bg-light text-dark me-2">${tag}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="article-body">
+                    <p class="lead">${article.description[this.currentLanguage]}</p>
+                    <div class="article-full-content">
+                        ${article.content[this.currentLanguage]}
+                    </div>
+                </div>
+                <div class="article-footer mt-4 pt-3 border-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            ${this.currentLanguage === 'id' ? 'Ditinjau oleh ahli gizi' : 'Reviewed by nutritionist'}
+                        </small>
+                        <div class="article-actions">
+                            <button class="btn btn-sm btn-outline-secondary me-2" onclick="shareArticle('${articleId}')">
+                                <i class="fas fa-share me-1"></i>
+                                ${this.currentLanguage === 'id' ? 'Bagikan' : 'Share'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const modal = new bootstrap.Modal(document.getElementById('articleModal'));
+        modal.show();
+    }
+
+    saveArticle(articleId) {
+        // In a real application, this would save to user's saved articles
+        showNotification(
+            this.currentLanguage === 'id' ? 'Artikel berhasil disimpan!' : 'Article saved successfully!',
+            'success'
+        );
+    }
+
+    shareArticle(articleId) {
+        if (navigator.share) {
+            navigator.share({
+                title: 'anthroGizi Library',
+                text: this.currentLanguage === 'id' ? 'Lihat artikel ini dari anthroGizi' : 'Check out this article from anthroGizi',
+                url: window.location.href + '?article=' + articleId
+            });
+        } else {
+            // Fallback: copy to clipboard
+            navigator.clipboard.writeText(window.location.href + '?article=' + articleId);
+            showNotification(
+                this.currentLanguage === 'id' ? 'Tautan disalin ke clipboard!' : 'Link copied to clipboard!',
+                'success'
+            );
+        }
+    }
+}
+
+// Initialize Library System
+const librarySystem = new LibrarySystem();
+
+// Global functions
+function setLanguage(lang) {
+    librarySystem.setLanguage(lang);
+}
+
+function filterByCategory() {
+    const category = document.getElementById('categoryFilter').value;
+    librarySystem.filterByCategory(category);
+}
+
+function performSearch() {
+    const query = document.getElementById('searchInput').value;
+    librarySystem.searchArticles(query);
+}
+
+function openArticle(articleId) {
+    librarySystem.openArticle(articleId);
+}
+
+function saveArticle() {
+    // Get current article from modal
+    const articleId = new URLSearchParams(window.location.search).get('article');
+    if (articleId) {
+        librarySystem.saveArticle(articleId);
+    }
+}
+
+function shareArticle(articleId) {
+    librarySystem.shareArticle(articleId);
+}
+
+// Event listeners
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch();
+    }
+});
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    librarySystem.renderArticles();
+    
+    // Check for article parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('article');
+    if (articleId) {
+        librarySystem.openArticle(articleId);
+    }
+});
+</script>
+{% endblock %}
